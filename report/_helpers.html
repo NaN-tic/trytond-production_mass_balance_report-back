@@ -1,0 +1,55 @@
+{% macro draw_table_input(moves, parameters) %}
+<table class="table collapse multi-collapse" id="moves">
+  <thead>
+    <tr>
+      <th scope="col">{{ _('Input Product') }}</th>
+      <th scope="col">{{ _('Production') }}</th>
+      <th scope="col">{{ _('Output Quantity') }}</th>
+      <th scope="col">{{ _('Input Consumption') }}</th>
+      <th scope="col">{{ _('Plan Consumption') }}</th>
+      <th scope="col">{{ _('Difference') }}</th>
+      <th scope="col">{{ _('% DIFF') }}</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for move in moves %}<tr>
+      <td><a href='{{ parameters['base_url'] }}/model/product.product/{{ move.product.id }};name="{{ _('Product') }}"'>{{ move.product.rec_name }}</a></td>
+      <td><a href='{{ parameters['base_url'] }}/model/production/{{ move.production_input.id }};name="{{ move.production_input.rec_name }}"'>{{ move.production_input.rec_name }}</a></td>
+      <td>{{ move.production_input.quantity or move.quantity }}</td>
+      <td>{{ move.quantity }}</td>
+      <td>{{ move.production_input.balance_plan_consumption or '' }}</td>
+      <td>{{ move.production_input.balance_difference or '' }}</td>
+      <td>{{ move.production_input.balance_difference_percent or '' }} %</td>
+    </tr>{% endfor %}
+  </tbody>
+</table>
+{% endmacro %}
+
+{% macro draw_table_output(moves, parameters) %}
+<table class="table collapse multi-collapse" id="moves">
+  <thead>
+    <tr>
+      <th scope="col">{{ _('Output Product') }}</th>
+      <th scope="col">{{ _('Production') }}</th>
+      <th scope="col">{{ _('Output Quantity') }}</th>
+      <th scope="col">{{ _('Input Consumption') }}</th>
+      <th scope="col">{{ _('Plan Consumption') }}</th>
+      <th scope="col">{{ _('Difference') }}</th>
+      <th scope="col">{{ _('% DIFF') }}</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for move in moves %}<tr>
+      <td><a href='{{ parameters['base_url'] }}/model/product.product/{{ move.product.id }};name="{{ _('Product') }}"'>{{ move.product.rec_name }}</a></td>
+      <td><a href='{{ parameters['base_url'] }}/model/production/{{ move.production_output.id }};name="{{ move.production_output.rec_name }}"'>{{ move.production_output.rec_name }}</a></td>
+      <td>{{ move.production_output.quantity or move.quantity }}</td>
+      <td>{{ move.quantity }}</td>
+      <td>{{ move.production_output.balance_plan_consumption or '' }}</td>
+      <td>{{ move.production_output.balance_difference or '' }}</td>
+      <td>{{ move.production_output.balance_difference_percent or '' }} %</td>
+    </tr>{% endfor %}
+  </tbody>
+</table>
+{% endmacro %}

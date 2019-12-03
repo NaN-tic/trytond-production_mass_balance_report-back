@@ -1,0 +1,171 @@
+# Spanish translations for PROJECT.
+# Copyright (C) 2019 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2019-10-24 12:41+0200\n"
+"PO-Revision-Date: 2019-10-24 12:42+0200\n"
+"Last-Translator: \n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+"X-Generator: Poedit 1.8.11\n"
+
+#: _helpers.html:5
+msgid "Input Product"
+msgstr "Producto consumido"
+
+#: _helpers.html:6 _helpers.html:34
+msgid "Production"
+msgstr "Producción"
+
+#: _helpers.html:7 _helpers.html:35
+msgid "Output Quantity"
+msgstr "Cantidad resultante"
+
+#: _helpers.html:8 _helpers.html:36
+msgid "Input Consumption"
+msgstr "Consumo entradas"
+
+#: _helpers.html:9 _helpers.html:37 production_mass_balance_report.html:48
+msgid "Plan Consumption"
+msgstr "Cantidad resultante"
+
+#: _helpers.html:10 _helpers.html:38 production_mass_balance_report.html:49
+msgid "Difference"
+msgstr "Diferencia"
+
+#: _helpers.html:11 _helpers.html:39 production_mass_balance_report.html:50
+msgid "% DIFF"
+msgstr "% dif"
+
+#: _helpers.html:17 _helpers.html:45 production_mass_balance_report.html:29
+msgid "Product"
+msgstr "Producto"
+
+#: _helpers.html:33
+msgid "Output Product"
+msgstr "Producto resultante"
+
+#: production_mass_balance_report.html:10
+#: production_mass_balance_report.html:16
+msgid "Mass Balance"
+msgstr "Balance de masas"
+
+#: production_mass_balance_report.html:24
+msgid "Efficiency Product Type"
+msgstr "Consulta producto tipo"
+
+#: production_mass_balance_report.html:24
+msgid "Input"
+msgstr "Entradas"
+
+#: production_mass_balance_report.html:24
+msgid "Output"
+msgstr "Salidas"
+
+#: production_mass_balance_report.html:30
+msgid "Lot"
+msgstr "Lote"
+
+#: production_mass_balance_report.html:34
+msgid "From Date"
+msgstr "Desde la fecha"
+
+#: production_mass_balance_report.html:35
+msgid "To Date"
+msgstr "Hasta la fecha"
+
+#: production_mass_balance_report.html:44
+msgid "Output Products"
+msgstr "Productos resultantes"
+
+#: production_mass_balance_report.html:44
+msgid "Input Products"
+msgstr "Productos consumidos"
+
+#: production_mass_balance_report.html:45
+msgid "Productions"
+msgstr "Producciones"
+
+#: production_mass_balance_report.html:46
+msgid "Quantity"
+msgstr "Cantidad"
+
+#: production_mass_balance_report.html:47
+msgid "Consumption"
+msgstr "Consumo"
+
+#~ msgid "From"
+#~ msgstr "Desde"
+
+#~ msgid "To"
+#~ msgstr "Hasta"
+
+#~ msgid "Origin"
+#~ msgstr "Orígen"
+
+#~ msgid "Sale Line"
+#~ msgstr "Linea de venta"
+
+#~ msgid "Purchase Line"
+#~ msgstr "Linea de compra"
+
+#~ msgid "Move"
+#~ msgstr "Movimiento"
+
+#~ msgid "UdM"
+#~ msgstr "UdM"
+
+#~ msgid "Effective Date"
+#~ msgstr "Fecha efectiva"
+
+#~ msgid "Warehouse"
+#~ msgstr "Almacén"
+
+#~ msgid "Lots"
+#~ msgstr "Lotes"
+
+#~ msgid "Traceability"
+#~ msgstr "Trazabilidad"
+
+#~ msgid "Expand All"
+#~ msgstr "Expandir todo"
+
+#~ msgid "Initial Stock"
+#~ msgstr "Stock inicial"
+
+#~ msgid "Supplier Incomming"
+#~ msgstr "Entradas proveedor"
+
+#~ msgid "Supplier Returns"
+#~ msgstr "Devoluciones proveedor"
+
+#~ msgid "Customer Outgoings"
+#~ msgstr "Salidas cliente"
+
+#~ msgid "Customer Returns"
+#~ msgstr "Devoluciones cliente"
+
+#~ msgid "Production Out"
+#~ msgstr "Salidas producción"
+
+#~ msgid "Production In"
+#~ msgstr "Entradas producción"
+
+#~ msgid "Inventory"
+#~ msgstr "Inventario"
+
+#~ msgid "From Lost & Found"
+#~ msgstr "Desde perdido y encontrado"
+
+#~ msgid "To Lost & Found"
+#~ msgstr "A perdido y encontrado"
