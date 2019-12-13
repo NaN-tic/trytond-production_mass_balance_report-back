@@ -10,7 +10,6 @@ from trytond.pyson import Bool, Eval
 from trytond.wizard import Wizard, StateView, StateReport, Button
 from trytond.transaction import Transaction
 from trytond.modules.html_report.html_report import HTMLReport
-from trytond.modules.product import price_digits
 
 
 __all__ = ['Production', 'PrintProductionMassBalanceStart',
@@ -23,11 +22,14 @@ _ZERO = 0
 class Production(metaclass=PoolMeta):
     __name__ = 'production'
     balance_plan_consumption = fields.Function(fields.Float(
-        'Balance Plan Consumption', digits=price_digits), 'get_mass_balance')
+        'Balance Plan Consumption', digits=(16, Eval('unit_digits', 2)),
+        depends=['unit_digits']), 'get_mass_balance')
     balance_difference = fields.Function(fields.Float(
-        'Balance Diference', digits=price_digits), 'get_mass_balance')
+        'Balance Diference', digits=(16, Eval('unit_digits', 2)),
+        depends=['unit_digits']), 'get_mass_balance')
     balance_difference_percent = fields.Function(fields.Float(
-        'Balance Diference Percent', digits=price_digits), 'get_mass_balance')
+        'Balance Diference Percent', digits=(16, Eval('unit_digits', 2)),
+        depends=['unit_digits']), 'get_mass_balance')
 
     @classmethod
     def get_mass_balance(cls, productions, names):
@@ -36,6 +38,9 @@ class Production(metaclass=PoolMeta):
         for name in names:
             for production in productions:
                 qty = _ZERO
+                # digits = production.__class__.balance_difference.digits
+                digits = production.on_change_with_unit_digits()
+
                 if (production.bom and production.product
                         and production.bom.inputs and production.bom.outputs):
                     product = production.product
@@ -47,15 +52,13 @@ class Production(metaclass=PoolMeta):
                     if name == 'balance_plan_consumption':
                         res[name][production.id] = qty
                     elif name == 'balance_difference':
-                        digits = production.__class__.balance_difference.digits
                         res[name][production.id] = float(
                             Decimal(production.quantity - qty).quantize(
-                                Decimal(str(10 ** -digits[1]))))
+                                Decimal(str(10 ** -digits))))
                     elif name == 'balance_difference_percent':
-                        digits = production.__class__.balance_difference_percent.digits
                         res[name][production.id] = float(
                             Decimal((production.quantity - qty) / qty).quantize(
-                                Decimal(str(10 ** -digits[1]))))
+                                Decimal(str(10 ** -digits))))
         return res
 
 
@@ -162,7 +165,6 @@ class PrintProductionMassBalanceSReport(HTMLReport):
         Product = pool.get('product.product')
         Move = pool.get('stock.move')
         Location = pool.get('stock.location')
-        Data = pool.get('ir.model.data')
 
         try:
             Lot = pool.get('stock.lot')
@@ -179,6 +181,7 @@ class PrintProductionMassBalanceSReport(HTMLReport):
 
         product = Product(data['product'])
         type_ = data['type_']
+        digits = product.__class__.cost_price.digits
 
         parameters = {}
         parameters['type'] = type_
@@ -199,12 +202,8 @@ class PrintProductionMassBalanceSReport(HTMLReport):
         parameters['base_url'] = base_url
 
         # Locations
-        loc_data, = Data.search([
-            ('module', '=', 'production'),
-            ('fs_id', '=', 'location_production'),
-            ('model', '=', 'stock.location'),
-            ], limit=1)
-        location_production = Location(loc_data.db_id)
+        location_ids = [l.id for l in Location.search(
+            [('type', '=', 'production')])]
 
         records = []
 
@@ -213,12 +212,12 @@ class PrintProductionMassBalanceSReport(HTMLReport):
             sql_where = ((move.product == product.id)
                 & (move.effective_date >= from_date) & (move.effective_date <= to_date)
                 & (move.state == 'done') & (move.company == company_id)
-                & (move.to_location == location_production.id))
+                & (move.to_location.in_(location_ids)))
         else:
             sql_where = ((move.product == product.id)
                 & (move.effective_date >= from_date) & (move.effective_date <= to_date)
                 & (move.state == 'done') & (move.company == company_id)
-                & (move.from_location == location_production.id))
+                & (move.from_location.in_(location_ids)))
 
         if data.get('lot'):
             sql_where.append((move.lot == data['lot']))
@@ -235,37 +234,42 @@ class PrintProductionMassBalanceSReport(HTMLReport):
                 production_moves += list(p.outputs)
             quantity = sum(move.production_output.quantity
                 or move.quantity for move in production_moves)
-            consumption = sum(move.quantity for move in production_moves)
-            plan_consumption = sum(move.production_output.balance_plan_consumption
-                or _ZERO for move in production_moves)
-            difference = sum(move.production_output.balance_difference
-                or _ZERO for move in production_moves)
-            difference_percent = sum(move.production_output.balance_difference_percent
-                or _ZERO for move in production_moves)
+            consumption = Decimal(sum(move.quantity for move in production_moves))
+            plan_consumption = Decimal(sum(move.production_output.balance_plan_consumption
+                or _ZERO for move in production_moves))
+            difference = Decimal(sum(move.production_output.balance_difference
+                or _ZERO for move in production_moves))
+            difference_percent = Decimal(sum(move.production_output.balance_difference_percent
+                or _ZERO for move in production_moves))
         else:
             productions = [m.production_output for m in moves]
             for p in productions:
                 production_moves += list(p.inputs)
             quantity = sum(move.production_input.quantity or move.quantity
                 for move in production_moves)
-            consumption = sum(move.quantity for move in production_moves)
-            plan_consumption = sum(move.production_input.balance_plan_consumption
-                or _ZERO for move in production_moves)
-            difference = sum(move.production_input.balance_difference
-                or _ZERO for move in production_moves)
-            difference_percent = sum(move.production_input.balance_difference_percent
-                or _ZERO for move in production_moves)
+            consumption = Decimal(sum(move.quantity for move in production_moves))
+            plan_consumption = Decimal(sum(move.production_input.balance_plan_consumption
+                or _ZERO for move in production_moves))
+            difference = Decimal(sum(move.production_input.balance_difference
+                or _ZERO for move in production_moves))
+            difference_percent = Decimal(sum(move.production_input.balance_difference_percent
+                or _ZERO for move in production_moves))
 
         records.append({
             'moves': production_moves,
             })
+
         parameters['productions'] = productions
         parameters['products'] = list(set([m.product for m in production_moves]))
         parameters['quantity'] = quantity
-        parameters['consumption'] = consumption
-        parameters['plan_consumption'] = plan_consumption
-        parameters['difference'] = difference
-        parameters['difference_percent'] = difference_percent
+        parameters['consumption'] = consumption.quantize(
+            Decimal(str(10 ** -digits[1])))
+        parameters['plan_consumption'] = plan_consumption.quantize(
+            Decimal(str(10 ** -digits[1])))
+        parameters['difference'] = difference.quantize(
+            Decimal(str(10 ** -digits[1])))
+        parameters['difference_percent'] = difference_percent.quantize(
+            Decimal(str(10 ** -digits[1])))
         return records, parameters
 
     @classmethod
